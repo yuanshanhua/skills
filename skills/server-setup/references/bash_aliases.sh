@@ -108,16 +108,6 @@ bak() {
     cp -v "$1" "${1}.bak.$(date +%Y%m%d_%H%M%S)"
 }
 
-# Yazi file manager integration (only if installed)
-if command -v yazi &>/dev/null; then
-    function y() {
-        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-        command yazi "$@" --cwd-file="$tmp"
-        IFS= read -r -d '' cwd < "$tmp"
-        [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
-        rm -f -- "$tmp"
-    }
-fi
 
 # ─── User specific ───────────────────────────────────────────────────────
 

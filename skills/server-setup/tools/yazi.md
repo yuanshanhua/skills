@@ -28,8 +28,18 @@ nix-env -iA nixpkgs.yazi
 
 ## 安装后配置
 
-shell 集成函数（`y` 命令用于 cd 到 yazi 退出时所在目录）已包含在
-`references/bash_aliases.sh` 模板中。
+在 `~/.bash_aliases` 中添加函数 `y` 用于自动 cd 到 yazi 退出时所在目录:
+
+```bash
+# yazi
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    command yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+    rm -f -- "$tmp"
+}
+```
 
 ## 依赖
 

@@ -30,10 +30,10 @@ nix-env -iA nixpkgs.pueue
 
 ## 安装后配置
 
-添加常用操作别名:
+在 `~/.bash_aliases` 中添加常用操作别名:
 
 ```bash
-# ─── pueue ──────────────────────────────────────────────────────────────────
+# pueue
 alias t='pueue'
 alias tt='pueue add -s'
 alias t-re='pueue restart -is'
