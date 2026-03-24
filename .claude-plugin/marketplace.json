@@ -1,0 +1,30 @@
+{
+  "name": "yuanshanhua-skills",
+  "owner": {
+    "name": "yuanshanhua"
+  },
+  "metadata": {
+    "description": "My skills collection",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "arxiv-latex-translator",
+      "description": "Translate arXiv LaTeX papers to Chinese while preserving formatting and compile to PDF",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "skills/arxiv-latex-translator"
+      ]
+    },
+    {
+      "name": "server-setup",
+      "description": "全自动 Linux 服务器环境搭建，部署 shell 配置、开发环境和常用工具",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "skills/server-setup"
+      ]
+    }
+  ]
+}
