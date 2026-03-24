@@ -19,8 +19,8 @@
 ### 步骤
 
 1. 备份现有文件（见下方备份章节）
-2. 读取 `references/bashrc.sh` → 写入 `~/.bashrc`
-3. 读取 `references/bash_aliases.sh` → 写入 `~/.bash_aliases`
+2. 复制 `references/bashrc.sh` →  `~/.bashrc`
+3. 复制 `references/bash_aliases.sh` →  `~/.bash_aliases`
 4. 如果 `~/.bashrc_local` 不存在则创建
 
 ### 默认配置的主要特性
