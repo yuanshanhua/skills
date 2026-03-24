@@ -14,7 +14,7 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "skills/arxiv-latex-translator"
+        "./skills/arxiv-latex-translator"
       ]
     },
     {
@@ -23,7 +23,7 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "skills/server-setup"
+        "./skills/server-setup"
       ]
     }
   ]
