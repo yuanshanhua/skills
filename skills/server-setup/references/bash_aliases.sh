@@ -146,3 +146,6 @@ if command -v yazi &>/dev/null; then
         rm -f -- "$tmp"
     }
 fi
+
+# ─── User specific ───────────────────────────────────────────────────────
+

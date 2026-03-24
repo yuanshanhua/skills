@@ -131,35 +131,17 @@ if ! shopt -oq posix; then
 fi
 
 # ─── 11. Environment variables ──────────────────────────────────────────────
-export EDITOR=vim
-export VISUAL=vim
+if command -v code &>/dev/null; then
+    export EDITOR='code --wait'
+    export VISUAL='code --wait'
+else
+    export EDITOR=vim
+    export VISUAL=vim
+fi
 export PAGER=less
 export LESS='-R --use-color -Dd+r$Du+b'
 export LANG=zh_CN.UTF-8
 export LC_ALL=zh_CN.UTF-8
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
-# ─── 12. Conditional tool integrations ──────────────────────────────────────
-# NVM
-if [ -d "$HOME/.nvm" ]; then
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-fi
 
-# Conda
-if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-    . "$HOME/miniconda3/etc/profile.d/conda.sh"
-elif [ -d "$HOME/miniconda3/bin" ]; then
-    export PATH="$HOME/miniconda3/bin:$PATH"
-fi
-
-# Homebrew (Linuxbrew)
-if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
-fi
-
-# Cargo (Rust)
-if [ -f "$HOME/.cargo/env" ]; then
-    . "$HOME/.cargo/env"
-fi
