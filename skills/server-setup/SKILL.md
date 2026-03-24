@@ -87,37 +87,6 @@ dotfiles/
 - dotfiles 仓库中的 `packages.txt` / `tools.txt`
 - JSON 数组（如 `["fzf", "ripgrep", "bat"]`）
 
-对于内置安装矩阵（`references/cli_tools.md`）中未识别的工具：
-如果设置了首选包管理器，尝试通过该管理器安装。否则跳过，并在最终总结中报告给用户
-由其决定。不要静默回退到系统包管理器 — 它通常需要 sudo 且版本较旧，
-不符合大多数用户的期望。
-
-## 架构：步骤文件
-
-```
-steps/
-├── 00-detect-distro.md        Phase 0 — 始终首先运行
-├── 01-mirror-sources.md       Phase 1 — 网络探测 + 镜像配置
-├── 02-base-tools.md           Phase 2 — 基础工具探测与按需安装
-├── 03-dotfiles.md             Phase 3 — bashrc / bash_aliases / dotfiles 仓库
-├── 04-git-config.md           Phase 4 — git 全局配置
-├── 05-ssh.md                  Phase 5 — SSH 密钥 + 安全加固
-├── 06-timezone-locale.md      Phase 6 — 时区与语言环境
-├── 07-dev-environments.md     Phase 7 — conda / uv / nvm / Go / Rust / Java
-├── 08-cli-tools.md            Phase 8 — fzf, ripgrep, yazi 等
-├── 09-docker.md               Phase 9 — Docker Engine + Compose
-├── 10-firewall.md             Phase 10 — ufw / firewalld
-└── 11-verify.md               Phase 11 — 验证与总结
-```
-
-其他参考文件（按需由步骤文件加载）：
-```
-references/
-├── bashrc.sh                  默认 .bashrc 模板
-├── bash_aliases.sh            默认 .bash_aliases 模板
-└── cli_tools.md               各工具按发行版的安装指令
-```
-
 ## 全局上下文
 
 以下变量在早期阶段建立，影响所有后续步骤：
@@ -212,29 +181,37 @@ dotfiles 仓库，工具列表问题会变成 "仓库之外还需要什么额外
    [ ] Rust (rustup)
    [ ] Java (OpenJDK, 版本: 11/17/21)
 
-6. CLI 工具（可多选，或指定自己的列表）:
-   [ ] yazi    [ ] pueue    [ ] fzf      [ ] ripgrep
-   [ ] fd      [ ] bat      [ ] eza      [ ] zoxide
-   [ ] tmux    [ ] Homebrew [ ] btop     [ ] Nix
-   或: 粘贴列表 / 提供文件路径 / "使用 dotfiles 仓库中的 packages.txt"
+6. CLI 工具:
+  [ ] 终端复用器: tmux
+  [ ] 包管理器: Homebrew, Nix
+  [ ] 系统监控: btop, nvtop
+  [ ] 文件浏览: yazi, eza
+  [ ] 任务队列: pueue
+  [ ] 搜索工具: fzf, ripgrep, fd, bat
+  [ ] 网络工具: rsync, curl, wget
+  [ ] 多媒体工具: ffmpeg
+  [ ] 容器: Docker, Podman
+  或: 粘贴列表 / 提供文件路径 / "使用 dotfiles 仓库中的 packages.txt"
+
+  如果选了容器运行时：
+    - 将当前用户加入容器组（docker 组 / podman rootless）？[y/n]
 
 6b. 包管理器偏好
     如果你选了 Homebrew、Nix 等包管理器，或者有其他偏好的包管理器，
     可以用它来统一安装上面的所有 CLI 工具 — 通常能拿到更新的版本，
     且不需要 sudo。
+    ⚠️ 注意：容器运行时（Docker/Podman）建议通过系统包管理器或官方仓库安装，
+    不受此偏好影响。
     首选包管理器:
       a) 无 — 每个工具用各自推荐的方式安装
       b) Homebrew — 尽可能通过 brew 安装
       c) Nix — 尽可能通过 nix 安装
       d) 其他: ___________
 
-7. Docker — 安装 Docker Engine + Compose？[y/n]
-   将当前用户加入 docker 组？[y/n]
-
-8. 防火墙 — 是否配置？[y/n]
+7. 防火墙 — 是否配置？[y/n]
    开放端口（如 22,80,443）:
 
-9. 还有其他需求吗？
+8. 还有其他需求吗？
 ```
 
 **处理配置来源答案：**
@@ -330,31 +307,19 @@ dotfiles 仓库，工具列表问题会变成 "仓库之外还需要什么额外
 
 | | |
 |---|---|
-| **内容** | 安装选定的 CLI 工具（fzf、ripgrep、fd、bat、eza、yazi、pueue、zoxide、tmux、Homebrew、Nix、btop） |
+| **内容** | 安装选定的 CLI 工具及容器运行时, 并进行个性化配置或换镜像源操作 |
 | **时机** | 仅在用户选择了任意 CLI 工具时执行（来自 Q&A 清单、自定义列表或 dotfiles 仓库） |
 | **条件** | 至少选择了一个 CLI 工具，或 `CUSTOM_TOOLS` 非空 |
-| **策略** | 如果设置了 `PREFERRED_PKG_MANAGER`，先安装该管理器，然后专用它安装所有其他工具。无法通过首选管理器安装的工具**跳过并报告** — 不要静默回退到 apt/dnf |
+| **策略** | 如果设置了 `PREFERRED_PKG_MANAGER`，先安装该包管理器，然后专用它安装所有其他工具。无法通过首选管理器安装的工具**跳过并报告** — 不要静默回退到 apt/dnf |
 
-→ 满足条件时，读取 `steps/08-cli-tools.md` 并执行。同时参考 `references/cli_tools.md`
-获取各工具的详细安装指令。如果用户提供了自定义工具列表（通过文本、文件或 dotfiles 仓库），
-使用该列表替代默认清单。
-
----
-
-### Phase 9: Docker — `steps/09-docker.md`
-
-| | |
-|---|---|
-| **内容** | 安装 Docker Engine + Docker Compose 插件，可选将用户加入 docker 组 |
-| **时机** | 仅在用户选择时执行 |
-| **条件** | `docker_install == true` |
-| **镜像影响** | 如果 `USE_MIRROR=true`，使用国内 Docker registry 镜像 |
-
-→ 满足条件时，读取 `steps/09-docker.md` 并执行。
+→ 满足条件时，读取 `steps/08-cli-tools.md` 获取安装策略，然后根据用户选择的工具，
+逐个读取 `tools/<tool_name>.md` 获取具体安装指令并执行。如果用户提供了自定义工具列表
+（通过文本、文件或 dotfiles 仓库），使用该列表替代默认清单。容器运行时（Docker/Podman）
+也在此阶段处理 — 详见 `tools/docker.md` 和 `tools/podman.md`。
 
 ---
 
-### Phase 10: 防火墙 — `steps/10-firewall.md`
+### Phase 9: 防火墙 — `steps/09-firewall.md`
 
 | | |
 |---|---|
@@ -362,11 +327,11 @@ dotfiles 仓库，工具列表问题会变成 "仓库之外还需要什么额外
 | **时机** | 仅在用户选择时执行 |
 | **条件** | `firewall_setup == true` |
 
-→ 满足条件时，读取 `steps/10-firewall.md` 并执行。
+→ 满足条件时，读取 `steps/09-firewall.md` 并执行。
 
 ---
 
-### Phase 11: 验证与总结 — `steps/11-verify.md`
+### Phase 10: 验证与总结 — `steps/10-verify.md`
 
 | | |
 |---|---|
@@ -374,14 +339,13 @@ dotfiles 仓库，工具列表问题会变成 "仓库之外还需要什么额外
 | **时机** | 始终执行 — 最后一个步骤 |
 | **条件** | 无（无条件执行） |
 
-→ 读取 `steps/11-verify.md` 并执行。
-
+→ 读取 `steps/10-verify.md` 并执行。
 ---
 
 ## 错误处理
 
 - 每个阶段应独立检查错误。非关键性失败记录日志；关键性失败（无法更新包、没有 sudo）停下来询问用户。
-- 维护一个警告/失败的累积列表，在 Phase 11 中报告。
+- 维护一个警告/失败的累积列表，在 Phase 10 中报告。
 - 运行 `sudo` 前先验证权限。如果没有权限，列出哪些步骤需要 root 并询问用户。
 
 ## 重要原则

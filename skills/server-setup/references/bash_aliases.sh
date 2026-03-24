@@ -45,26 +45,6 @@ alias ports='ss -tulnp'
 alias myip='curl -s https://ifconfig.me && echo'
 alias localip="ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}'"
 
-# ─── Git shortcuts ───────────────────────────────────────────────────────────
-alias g='git'
-alias gs='git status -sb'
-alias ga='git add'
-alias gaa='git add --all'
-alias gc='git commit -v'
-alias gcm='git commit -m'
-alias gca='git commit --amend --no-edit'
-alias gp='git push'
-alias gpf='git push --force-with-lease'
-alias gl='git pull'
-alias glog='git log --oneline --graph --decorate --all'
-alias gd='git diff'
-alias gds='git diff --staged'
-alias gb='git branch -vv'
-alias gco='git checkout'
-alias gcb='git checkout -b'
-alias gst='git stash'
-alias gstp='git stash pop'
-
 # ─── Editor ──────────────────────────────────────────────────────────────────
 alias vi='vim'
 alias v='vim'
@@ -85,14 +65,6 @@ alias aliases='${EDITOR:-vim} ~/.bash_aliases'
 alias chown='chown --preserve-root'
 alias chmod='chmod --preserve-root'
 alias chgrp='chgrp --preserve-root'
-
-# ─── Pueue (only if installed) ───────────────────────────────────────────────
-if command -v pueue &>/dev/null; then
-    alias t='pueue'
-    alias tt='pueue add -s'
-    alias t-re='pueue restart -is'
-    alias t-kill='pueue kill -s 9'
-fi
 
 # ─── Functions ───────────────────────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-# Phase 11: 验证与总结
+# Phase 10: 验证与总结
 
 最后一个步骤。检查所有已安装的内容并呈现简洁的总结。
 
@@ -39,11 +39,16 @@ check_tool "rustc" "rustc"
 check_tool "java" "java"
 
 echo ""
-echo "=== 服务 ==="
-if systemctl is-active docker &>/dev/null; then
-    echo "  ✅ Docker: 运行中"
-else
-    echo "  ⚠️  Docker: 未运行"
+echo "=== 容器运行时 ==="
+if command -v docker &>/dev/null; then
+    if systemctl is-active docker &>/dev/null; then
+        echo "  ✅ Docker: 运行中"
+    else
+        echo "  ⚠️  Docker: 已安装但未运行"
+    fi
+fi
+if command -v podman &>/dev/null; then
+    echo "  ✅ Podman: $(podman --version 2>&1 | head -1)"
 fi
 ```
 
@@ -61,7 +66,7 @@ fi
 | 镜像源 | ✅/⏭️ | TUNA 镜像 / 直连 |
 | 开发环境 | ✅ | conda, nvm |
 | CLI 工具 | ✅ | fzf, rg, bat |
-| Docker | ✅/⏭️ | 运行中 / 已跳过 |
+| 容器运行时 | ✅/⏭️ | Docker 运行中 / Podman 就绪 / 已跳过 |
 | 防火墙 | ✅/⏭️ | 端口 22,80,443 / 已跳过 |
 ```
 

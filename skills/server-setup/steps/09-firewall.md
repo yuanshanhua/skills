@@ -1,10 +1,11 @@
-# Phase 10: 防火墙配置
+# Phase 9: 防火墙配置
 
 配置基础防火墙。Debian 系列使用 ufw，RHEL 系列使用 firewalld。
 
 ## 必要输入
 
 来自 Q&A：
+
 - `FIREWALL_PORTS` — 需开放的端口，逗号分隔（如 22,80,443）
 
 如果用户在 Phase 4 中修改了 SSH 端口，**确保该端口包含在**开放端口列表中。
